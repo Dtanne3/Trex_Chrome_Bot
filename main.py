@@ -1,4 +1,4 @@
-#https://www.tuckercraig.com/dino/
+#https://www.tuckercraig.co]m/dino/
 
 import keyboard
 import bot

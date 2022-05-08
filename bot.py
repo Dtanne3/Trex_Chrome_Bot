@@ -3,18 +3,31 @@ import keyboard
 import pyautogui
 import cv2
 import time
+import os
+import asyncio
 
-x, y, w, h = 661, 318, 194, 63 #Camera dimensions
-objects = ["imgs/Cactus5.png", "imgs/Char1.png", "imgs/Cactus6.png", "imgs/Cactus7.png"]
-player = cv2.imread("imgs/Player.png")
+#globals
+rangeX = 175
 
-def getDistance(img):
-    pass
+x, y, w, h = 684, 307, 581, 76 #Camera dimensions
+objects = ["imgs/Cactus5.png", "imgs/Char1.png", "imgs/Cactus6.png", "imgs/Cactus7.png", "imgs/GameOver.png"]
+playerLocationX = 728 #player location on the X axis
+
+
+async def action(img_input, max_loc):
+    if max_loc[0] <= rangeX:
+        if img_input == "imgs/Char1.png" and max_loc[1] >= 336:
+            crouch(0.9)
+        elif img_input == "imgs/Cactus6.png":
+            jump(0.4)
+        else:
+            jump(0.4)  #fast-landing strategy until proper prediction method is implemented
+            crouch(0.1)
 
 #action inputs
-def jump():
+def jump(seconds):
     keyboard.press('space')
-    time.sleep(0.2)
+    time.sleep(seconds)
     keyboard.release('space')
 
 def crouch(seconds):
@@ -40,12 +53,9 @@ def Run():
             min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(matchResult)
             if max_val >= 0.7:
                 #differentiate between cactus and pterodactyl
-                if img_input == "imgs/Char1.png" and max_loc[1] >= 336:
-                    crouch(0.6)
-                else:
-                    jump()
-                    time.sleep(0.1)  #fast-landing strategy until proper prediction method is implemented
-                    crouch(0.2)
+                asyncio.run(action(img_input, max_loc))
+                        
+    os.remove("imgs/screen.png")
         
                 
             
